@@ -506,58 +506,60 @@
 </div>
 
 <script>
-// --- KONFIGURACE GLOBÁLNÍHO POČÍ TAZLA (CounterAPI) ---
-const COUNTER_NAMESPACE = 'dolni-brezany-volby-2026';
-const COUNTER_KEY = 'vyplneni-dotazniku';
-const API_BASE = `https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}`;
+// --- OPRAVENÁ KONFIGURACE ČÍTAČE (CounterAPI.dev v1/v2) ---
+const NAMESPACE = 'majkelor-volby2026';
+const COUNTER_NAME = 'dolni-brezany-vyplneni';
 
-// Načtení aktuálního globálního počtu ze serveru
+// 1. Načtení aktuálního globálního počtu
 async function fetchGlobalCounter() {
+    const counterEl = document.getElementById('completion-counter');
     try {
-        const response = await fetch(API_BASE);
-        const data = await response.json();
+        const response = await fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/${COUNTER_NAME}`);
         
-        if (response.ok && data.count !== undefined) {
-            document.getElementById('completion-counter').innerText = data.count;
+        if (response.ok) {
+            const result = await response.json();
+            // CounterAPI vrací hodnocení/počet v záložce up_count nebo count
+            const count = result.data ? (result.data.up_count ?? result.data.count) : (result.count ?? 0);
+            counterEl.innerText = count;
         } else if (response.status === 404) {
-            // Pokud čítač ještě na serveru neexistuje, vytvoříme ho
-            createCounter();
+            // Pokud čítač v databázi ještě neexistuje, poprvé ho vytvoříme
+            await createCounter();
         } else {
-            document.getElementById('completion-counter').innerText = '0';
+            counterEl.innerText = '0';
         }
     } catch (error) {
-        console.error('Chyba načítání počítadla:', error);
-        document.getElementById('completion-counter').innerText = '1';
+        console.error('Chyba při načítání počítadla:', error);
+        counterEl.innerText = '1';
     }
 }
 
-// Vytvoření nového počítadla na serveru (spustí se pouze poprvé)
+// 2. Vytvoření nového čítače (pokud ještě neexistoval)
 async function createCounter() {
     try {
-        const response = await fetch(`${API_BASE}/set?count=1`);
-        const data = await response.json();
-        if (data.count !== undefined) {
-            document.getElementById('completion-counter').innerText = data.count;
-        }
+        const response = await fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/${COUNTER_NAME}/set?count=1`);
+        const result = await response.json();
+        const count = result.data ? (result.data.up_count ?? result.data.count) : (result.count ?? 1);
+        document.getElementById('completion-counter').innerText = count;
     } catch (e) {
         document.getElementById('completion-counter').innerText = '1';
     }
 }
 
-// Navýšení počítadla na serveru o +1
+// 3. Navýšení počítadla o +1
 async function incrementGlobalCounter() {
-    // Zamezí vícenásobnému započítání stejného uživatele v jedné relaci prohlížeče
     if (sessionStorage.getItem('alreadyCounted')) {
-        return;
+        return; // Zamezí násobnému klikání z jednoho prohlížeče
     }
 
     try {
-        const response = await fetch(`${API_BASE}/up`);
-        const data = await response.json();
-        
-        if (data && data.count !== undefined) {
-            document.getElementById('completion-counter').innerText = data.count;
-            sessionStorage.setItem('alreadyCounted', 'true');
+        const response = await fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/${COUNTER_NAME}/up`);
+        if (response.ok) {
+            const result = await response.json();
+            const count = result.data ? (result.data.up_count ?? result.data.count) : result.count;
+            if (count !== undefined) {
+                document.getElementById('completion-counter').innerText = count;
+                sessionStorage.setItem('alreadyCounted', 'true');
+            }
         }
     } catch (error) {
         console.error('Chyba při navýšení počítadla:', error);
