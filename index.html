@@ -90,7 +90,7 @@
             font-size: 1.5em;
         }
 
-        /* Výrazné oddělení kategórií */
+        /* Výrazné oddělení kategorií */
         .category-title {
             background: linear-gradient(135deg, #2c3e50, #34495e);
             color: white;
@@ -207,6 +207,38 @@
             background: #219150;
         }
 
+        /* Tlačítko pro rozbalení detailu otázky */
+        .btn-toggle-details {
+            background: #f1f3f5;
+            color: var(--primary);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.88em;
+            font-weight: 600;
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+
+        .btn-toggle-details:hover {
+            background: #e9ecef;
+        }
+
+        .details-content {
+            display: none;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--border);
+        }
+
+        .details-content.open {
+            display: block;
+        }
+
         /* Responsive Iframe pro video */
         .video-container {
             position: relative;
@@ -319,7 +351,7 @@
             padding: 10px 20px;
             border-radius: 6px;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 30px;
         }
 
         @media (max-width: 600px) {
@@ -358,15 +390,6 @@
         <div id="criteria-questions"></div>
 
         <button type="button" class="btn-submit" onclick="calculateResults()">Vyhodnotit výsledky</button>
-
-        <!-- VIDEO NA KONCI DOTAZNÍKU -->
-        <div style="margin-top: 50px; border-top: 2px solid var(--border); padding-top: 25px;">
-            <h3 style="color: var(--primary); text-align: center;">Jak správně upravit a označit volební lístky?</h3>
-            <p style="text-align: center; color: var(--text-muted); font-size: 0.95em;">Podívejte se na krátký návod, jak probíhá volba v komunálních volbách a jak křížkovat kandidáty:</p>
-            <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/VXua4W6zmn4" title="Jak označit volební lístky" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-        </div>
     </form>
 
     <!-- ZOBRAZENÍ VÝSLEDKŮ -->
@@ -378,6 +401,7 @@
         <div id="program-results"></div>
 
         <h3 style="margin-top: 35px;">Detailní rozpad podle otázek a zdroje webů</h3>
+        <p style="color: var(--text-muted); font-size: 0.9em;">Kliknutím na tlačítko u otázky zobrazíte konkrétní stanoviska a odkazy na weby stran.</p>
         <div id="questions-breakdown"></div>
 
         <h3 style="margin-top: 40px;">2. Vaše preference ohledně týmu a zkušeností</h3>
@@ -420,6 +444,15 @@
                     <li>Lídr/kandidát Robert Koželský byl účastníkem a žalobcem v právních řízeních týkajících se územního rozhodnutí pro obchvat Dolních Břežan (Krajský soud na základě žaloby zrušil původní územní rozhodnutí a vrátil věc k novému projednání).</li>
                     <li>Uskupení staví na kritice dosavadních projektů a prosazuje rychlou realizaci obchvatu a vyšší transparentnost.</li>
                 </ul>
+            </div>
+        </div>
+
+        <!-- VIDEO NA SAMÉM KONCI PO VYHODNOCENÍ -->
+        <div style="margin-top: 50px; border-top: 2px solid var(--border); padding-top: 25px;">
+            <h3 style="color: var(--primary); text-align: center;">Jak správně upravit a označit volební lístky?</h3>
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.95em;">Podívejte se na krátký návod, jak probíhá volba v komunálních volbách a jak křížkovat kandidáty:</p>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/VXua4W6zmn4" title="Jak označit volební lístky" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
 
@@ -747,6 +780,19 @@ function updateProgress() {
     }
 }
 
+function toggleDetails(index) {
+    const content = document.getElementById(`details-${index}`);
+    const btn = document.getElementById(`btn-toggle-${index}`);
+    
+    if (content.classList.contains('open')) {
+        content.classList.remove('open');
+        btn.innerHTML = '▼ Rozbalit detail a zdroje stránek';
+    } else {
+        content.classList.add('open');
+        btn.innerHTML = '▲ Skrýt detail';
+    }
+}
+
 function calculateResults() {
     let partyScores = [0, 0, 0];
     let maxPossibleScore = 0;
@@ -804,9 +850,15 @@ function calculateResults() {
             qDiv.className = "question-card";
             
             let uAnsText = uAns === 1 ? "<span style='color: var(--color-yes); font-weight: bold;'>Ano</span>" : (uAns === -1 ? "<span style='color: var(--color-no); font-weight: bold;'>Ne</span>" : "<span style='color: var(--color-neutral); font-weight: bold;'>Nevím / Neutrální</span>");
+            
             let html = `<strong>${index + 1}. ${item.q}</strong><br>`;
-            html += `<span style="color: var(--text-muted); font-size: 0.9em;">Vaše odpověď: ${uAnsText} ${userImportance[index] ? '<b>(Důležité téma)</b>' : ''}</span><div style="margin-top: 10px;">`;
-
+            html += `<span style="color: var(--text-muted); font-size: 0.9em;">Vaše odpověď: ${uAnsText} ${userImportance[index] ? '<b>(Důležité téma)</b>' : ''}</span><br>`;
+            
+            // Tlačítko pro rozbalení
+            html += `<button type="button" class="btn-toggle-details" id="btn-toggle-${index}" onclick="toggleDetails(${index})">▼ Rozbalit detail a zdroje stránek</button>`;
+            
+            // Skrytý obsah s detaily
+            html += `<div class="details-content" id="details-${index}">`;
             item.details.forEach(d => {
                 html += `
                     <div class="party-comment">
@@ -816,6 +868,7 @@ function calculateResults() {
                 `;
             });
             html += `</div>`;
+
             qDiv.innerHTML = html;
             bdContainer.appendChild(qDiv);
         }
