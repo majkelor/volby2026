@@ -207,7 +207,30 @@
             background: #219150;
         }
 
-        /* Tlačítko pro rozbalení detailu otázky */
+        /* Tlačítka pro rozbalování sekcí */
+        .btn-toggle-main {
+            background: #e9ecef;
+            color: var(--primary);
+            border: 1px solid var(--border);
+            padding: 12px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .btn-toggle-main:hover {
+            background: #dee2e6;
+        }
+
         .btn-toggle-details {
             background: #f1f3f5;
             color: var(--primary);
@@ -400,14 +423,32 @@
         <p>Shoda vašich názorů s volebními programy a deklaracemi kandidujících subjektů:</p>
         <div id="program-results"></div>
 
+        <!-- SKRYTÁ SEKCE: DETAILNÍ ROZPAD PODLE OTÁZEK -->
         <h3 style="margin-top: 35px;">Detailní rozpad podle otázek a zdroje webů</h3>
-        <p style="color: var(--text-muted); font-size: 0.9em;">Kliknutím na tlačítko u otázky zobrazíte konkrétní stanoviska a odkazy na weby stran.</p>
-        <div id="questions-breakdown"></div>
+        <button type="button" class="btn-toggle-main" id="btn-toggle-section-breakdown" onclick="toggleMainSection('breakdown-container', 'btn-toggle-section-breakdown', 'Rozbalit detailní rozpad podle otázek')">
+            <span>▼ Rozbalit detailní rozpad podle otázek</span>
+        </button>
+        
+        <div id="breakdown-container" class="details-content">
+            <div id="questions-breakdown"></div>
+        </div>
 
+        <!-- 2. ČÁST: PREFERENCE OHLEDNĚ TÝMU A ZKUŠENOSTÍ -->
         <h3 style="margin-top: 40px;">2. Vaše preference ohledně týmu a zkušeností</h3>
-        <div id="criteria-summary" class="question-card"></div>
+        
+        <!-- Doporučení přímo viditelné -->
         <div id="criteria-recommendation" class="recommendation-box"></div>
 
+        <!-- Skrytý detail voleb -->
+        <button type="button" class="btn-toggle-main" id="btn-toggle-section-criteria" onclick="toggleMainSection('criteria-summary-container', 'btn-toggle-section-criteria', 'Rozbalit detail vaší volby')">
+            <span>▼ Rozbalit detail vaší volby</span>
+        </button>
+        
+        <div id="criteria-summary-container" class="details-content">
+            <div id="criteria-summary" class="question-card"></div>
+        </div>
+
+        <!-- 3. ČÁST: FAKTA A KONTEXT -->
         <h3 style="margin-top: 40px;">3. Co je dobré před volbou vědět (Fakta a kontext)</h3>
         
         <div class="result-card">
@@ -780,6 +821,19 @@ function updateProgress() {
     }
 }
 
+function toggleMainSection(containerId, btnId, defaultText) {
+    const container = document.getElementById(containerId);
+    const btn = document.getElementById(btnId);
+    
+    if (container.classList.contains('open')) {
+        container.classList.remove('open');
+        btn.innerHTML = `<span>▼ ${defaultText}</span>`;
+    } else {
+        container.classList.add('open');
+        btn.innerHTML = `<span>▲ Skrýt detail</span>`;
+    }
+}
+
 function toggleDetails(index) {
     const content = document.getElementById(`details-${index}`);
     const btn = document.getElementById(`btn-toggle-${index}`);
@@ -854,10 +908,10 @@ function calculateResults() {
             let html = `<strong>${index + 1}. ${item.q}</strong><br>`;
             html += `<span style="color: var(--text-muted); font-size: 0.9em;">Vaše odpověď: ${uAnsText} ${userImportance[index] ? '<b>(Důležité téma)</b>' : ''}</span><br>`;
             
-            // Tlačítko pro rozbalení
+            // Tlačítko pro rozbalení podrobností u konkrétní otázky
             html += `<button type="button" class="btn-toggle-details" id="btn-toggle-${index}" onclick="toggleDetails(${index})">▼ Rozbalit detail a zdroje stránek</button>`;
             
-            // Skrytý obsah s detaily
+            // Skrytý obsah s detaily u otázky
             html += `<div class="details-content" id="details-${index}">`;
             item.details.forEach(d => {
                 html += `
@@ -919,6 +973,12 @@ function resetQuiz() {
     document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
     document.querySelectorAll('.question-card').forEach(qc => qc.classList.remove('answered'));
     
+    // Zavření rozbalených sekcí
+    document.getElementById('breakdown-container').classList.remove('open');
+    document.getElementById('btn-toggle-section-breakdown').innerHTML = '<span>▼ Rozbalit detailní rozpad podle otázek</span>';
+    document.getElementById('criteria-summary-container').classList.remove('open');
+    document.getElementById('btn-toggle-section-criteria').innerHTML = '<span>▼ Rozbalit detail vaší volby</span>';
+
     document.getElementById("progress-bar").style.display = "flex";
     document.getElementById("quiz-form").style.display = "block";
     document.getElementById("results").style.display = "none";
