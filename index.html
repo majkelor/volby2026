@@ -10,9 +10,13 @@
             --accent: #27ae60;
             --bg: #f8f9fa;
             --card-bg: #ffffff;
-            --border: #e9ecef;
+            --border: #dee2e6;
             --text: #333333;
             --text-muted: #6c757d;
+            
+            --color-yes: #27ae60;
+            --color-neutral: #6c757d;
+            --color-no: #e74c3c;
         }
 
         body {
@@ -22,6 +26,38 @@
             line-height: 1.6;
             margin: 0;
             padding: 20px;
+            padding-top: 80px; /* Prostor pro pevný ukazatel */
+        }
+
+        /* Pevná lišta s počítadlem */
+        .progress-bar-sticky {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border-bottom: 2px solid var(--border);
+            padding: 12px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 850px;
+            margin: 0 auto;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .progress-text {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .progress-count {
+            background: #e9ecef;
+            padding: 4px 12px;
+            border-radius: 12px;
+            color: var(--primary);
         }
 
         .container {
@@ -46,20 +82,28 @@
         }
 
         .section-title {
-            border-bottom: 2px solid var(--primary);
+            border-bottom: 3px solid var(--primary);
             padding-bottom: 8px;
             margin-top: 40px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             color: var(--primary);
+            font-size: 1.5em;
         }
 
+        /* Výrazné oddělení kategórií */
         .category-title {
-            background: #f1f3f5;
-            padding: 10px 15px;
-            border-radius: 6px;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 1.2em;
             font-weight: bold;
-            margin-top: 25px;
-            margin-bottom: 15px;
+            margin-top: 35px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .question-card {
@@ -68,6 +112,11 @@
             padding: 18px;
             margin-bottom: 15px;
             background: #fff;
+            transition: border-color 0.2s;
+        }
+
+        .question-card.answered {
+            border-left: 4px solid var(--accent);
         }
 
         .question-text {
@@ -75,6 +124,7 @@
             margin-bottom: 12px;
         }
 
+        /* Barevné rozlišení tlačítek */
         .options {
             display: flex;
             gap: 10px;
@@ -84,24 +134,48 @@
 
         .btn-option {
             flex: 1;
-            min-width: 80px;
-            padding: 8px 12px;
-            border: 1px solid var(--border);
+            min-width: 90px;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
             background: #fff;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s;
             text-align: center;
+            font-weight: 600;
         }
 
-        .btn-option:hover {
-            background: #e9ecef;
+        /* Styl tlačítka ANO */
+        .btn-option.btn-yes {
+            color: var(--color-yes);
+            border-color: #a3e0b5;
         }
-
-        .btn-option.active {
-            background: var(--primary);
+        .btn-option.btn-yes:hover, .btn-option.btn-yes.active {
+            background: var(--color-yes);
             color: white;
-            border-color: var(--primary);
+            border-color: var(--color-yes);
+        }
+
+        /* Styl tlačítka NEVÍM / NEUTRAL */
+        .btn-option.btn-neutral {
+            color: var(--color-neutral);
+            border-color: #ced4da;
+        }
+        .btn-option.btn-neutral:hover, .btn-option.btn-neutral.active {
+            background: var(--color-neutral);
+            color: white;
+            border-color: var(--color-neutral);
+        }
+
+        /* Styl tlačítka NE */
+        .btn-option.btn-no {
+            color: var(--color-no);
+            border-color: #f5b7b1;
+        }
+        .btn-option.btn-no:hover, .btn-option.btn-no.active {
+            background: var(--color-no);
+            color: white;
+            border-color: var(--color-no);
         }
 
         .importance-toggle {
@@ -131,6 +205,27 @@
 
         .btn-submit:hover {
             background: #219150;
+        }
+
+        /* Responsive Iframe pro video */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
         }
 
         /* Results Styles */
@@ -195,18 +290,13 @@
             margin-bottom: 6px;
         }
 
-        .question-detail {
-            border-top: 1px solid var(--border);
-            padding-top: 15px;
-            margin-top: 15px;
-        }
-
         .party-comment {
             margin-bottom: 10px;
-            padding: 8px;
+            padding: 10px;
             background: #f8f9fa;
             border-radius: 6px;
             font-size: 0.9em;
+            border-left: 3px solid var(--primary);
         }
 
         .party-comment strong {
@@ -244,6 +334,12 @@
 </head>
 <body>
 
+<!-- Pevný ukazatel průběhu -->
+<div class="progress-bar-sticky" id="progress-bar">
+    <span class="progress-text">Stav vyplnění dotazníku:</span>
+    <span class="progress-count" id="progress-text-count">Zbývá zodpovědět 25 otázek</span>
+</div>
+
 <div class="container">
     <h1>Volební průvodce Dolní Břežany 2026</h1>
     <p class="subtitle">Dvourozměrný kompas: Programová shoda & Hodnotová kritéria</p>
@@ -262,6 +358,15 @@
         <div id="criteria-questions"></div>
 
         <button type="button" class="btn-submit" onclick="calculateResults()">Vyhodnotit výsledky</button>
+
+        <!-- VIDEO NA KONCI DOTAZNÍKU -->
+        <div style="margin-top: 50px; border-top: 2px solid var(--border); padding-top: 25px;">
+            <h3 style="color: var(--primary); text-align: center;">Jak správně upravit a označit volební lístky?</h3>
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.95em;">Podívejte se na krátký návod, jak probíhá volba v komunálních volbách a jak křížkovat kandidáty:</p>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/VXua4W6zmn4" title="Jak označit volební lístky" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
     </form>
 
     <!-- ZOBRAZENÍ VÝSLEDKŮ -->
@@ -323,12 +428,10 @@
 </div>
 
 <script>
-// Data programových otázek (1 = Ano, 0 = Neutral/Je mi to jedno, -1 = Ne)
-// Stances: [Rozkvět, Společně, Impuls]
 const programQuestions = [
     // Doprava a obchvat
     { 
-        cat: "Doprava a obchvat", 
+        cat: "🚗 Doprava a obchvat", 
         q: "Měla by obec udělat maximum pro co nejrychlejší dokončení obchvatu Dolních Břežan?", 
         stances: [1, 1, 1],
         details: [
@@ -338,7 +441,7 @@ const programQuestions = [
         ]
     },
     { 
-        cat: "Doprava a obchvat", 
+        cat: "🚗 Doprava a obchvat", 
         q: "Měla by obec více tlačit na Středočeský kraj, aby se obchvat skutečně začal stavět?", 
         stances: [1, 1, 1],
         details: [
@@ -348,7 +451,7 @@ const programQuestions = [
         ]
     },
     { 
-        cat: "Doprava a obchvat", 
+        cat: "🚗 Doprava a obchvat", 
         q: "Měla by obec více řešit průjezd a bezpečnost dopravy přímo v centru Břežan, i kdyby to znamenalo omezení automobilové dopravy?", 
         stances: [1, 0, -1],
         details: [
@@ -358,19 +461,19 @@ const programQuestions = [
         ]
     },
     { 
-        cat: "Doprava a obchvat", 
+        cat: "🚗 Doprava a obchvat", 
         q: "Mělo by být v obci vybudováno více parkovacích míst, i za cenu využití části veřejného prostoru?", 
         stances: [-1, 0, 1],
         details: [
             { party: "ROZKVĚT", text: "Upřednostňuje ochranu zeleně a parků před rozšiřováním asfaltových ploch.", url: "https://www.rozkvet.eu/" },
-            { party: "SPOLEČNĚ", text: "K tomuto tématu jsem na webu strany nic konkrétního nenasel.", url: "https://spolecneprobrezany.cz/" },
+            { party: "SPOLEČNĚ", text: "K tomuto tématu jsem na webu strany nic konkrétního nenašel.", url: "https://spolecneprobrezany.cz/" },
             { party: "IMPULSPRO", text: "Zdůrazňuje potřebu řešit chybějící parkování v obci.", url: "https://impulspro.cz/" }
         ]
     },
     
     // Výstavba a rozvoj obce
     { 
-        cat: "Výstavba a rozvoj obce", 
+        cat: "🏗️ Výstavba a rozvoj obce", 
         q: "Měla by obec výrazněji omezovat další bytovou a developerskou výstavbu, aby se Dolní Břežany příliš nezvětšovaly?", 
         stances: [1, 1, 1],
         details: [
@@ -380,17 +483,17 @@ const programQuestions = [
         ]
     },
     { 
-        cat: "Výstavba a rozvoj obce", 
+        cat: "🏗️ Výstavba a rozvoj obce", 
         q: "Měla by být nová výstavba povolována pouze tehdy, pokud současně přinese obci odpovídající infrastrukturu – například školu, školku, komunikace nebo veřejný prostor?", 
         stances: [1, 1, 1],
         details: [
             { party: "ROZKVĚT", text: "Aplikuje plánovací smlouvy a příspěvky developerů do infrastruktury.", url: "https://www.rozkvet.eu/" },
-            { party: "SPOLEČNĚ", text: "Důraz na rozvoj občasné vybavenosti ruku v ruce s výstavbou.", url: "https://spolecneprobrezany.cz/" },
+            { party: "SPOLEČNĚ", text: "Důraz na rozvoj občanské vybavenosti ruku v ruce s výstavbou.", url: "https://spolecneprobrezany.cz/" },
             { party: "IMPULSPRO", text: "Trvá na tom, že rozvoj infrastruktury musí předcházet novým stavbám.", url: "https://impulspro.cz/" }
         ]
     },
     { 
-        cat: "Výstavba a rozvoj obce", 
+        cat: "🏗️ Výstavba a rozvoj obce", 
         q: "Měla by obec více chránit nezastavěnou krajinu a zemědělskou půdu před další výstavbou?", 
         stances: [1, 1, 1],
         details: [
@@ -400,7 +503,7 @@ const programQuestions = [
         ]
     },
     { 
-        cat: "Výstavba a rozvoj obce", 
+        cat: "🏗️ Výstavba a rozvoj obce", 
         q: "Je podle vás současné tempo rozvoje Dolních Břežan správné a měla by obec v podobném tempu pokračovat?", 
         stances: [1, 0, -1],
         details: [
@@ -412,37 +515,37 @@ const programQuestions = [
 
     // Děti, školy a sport
     { 
-        cat: "Děti, školy a sport", 
+        cat: "🏫 Děti, školy a sport", 
         q: "Měla by být jednou z hlavních priorit obce další podpora základní školy a zajištění dostatečné kapacity pro děti z obce?", 
         stances: [1, 1, 1],
         details: [
-            { party: "ROZKVĚT", text: "Realizoval rekostrukci dvora ZŠ, zahrady MŠ a buduje nové dětské skupiny.", url: "https://www.rozkvet.eu/" },
+            { party: "ROZKVĚT", text: "Realizoval rekonstrukci dvora ZŠ, zahrady MŠ a buduje nové dětské skupiny.", url: "https://www.rozkvet.eu/" },
             { party: "SPOLEČNĚ", text: "Podpora školství a sportu mládeže je stěžejním bodem.", url: "https://spolecneprobrezany.cz/" },
             { party: "IMPULSPRO", text: "Školství a bezpečnost dětí označuje za prioritu.", url: "https://impulspro.cz/" }
         ]
     },
     { 
-        cat: "Děti, školy a sport", 
+        cat: "🏫 Děti, školy a sport", 
         q: "Měla by obec více investovat do sportovišť a volnočasových aktivit pro děti a teenagery?", 
         stances: [1, 1, 1],
         details: [
             { party: "ROZKVĚT", text: "Investoval do skateparku (5,2 mil.) a klubovny ve Lhotě (12,8 mil.).", url: "https://www.rozkvet.eu/" },
-            { party: "SPOLEČNĚ", text: "Kandidáti působí v vedení sportovních klubů (SK Olympia).", url: "https://spolecneprobrezany.cz/" },
+            { party: "SPOLEČNĚ", text: "Kandidáti působí ve vedení sportovních klubů (SK Olympia).", url: "https://spolecneprobrezany.cz/" },
             { party: "IMPULSPRO", text: "Podporuje rozvoj sportovních možností pro mládež.", url: "https://impulspro.cz/" }
         ]
     },
     { 
-        cat: "Děti, školy a sport", 
+        cat: "🏫 Děti, školy a sport", 
         q: "Chybí podle vás v Dolních Břežanech kvalitní veřejné sportoviště, které by mohly děti a teenageři využívat bez registrace a zdarma?", 
         stances: [-1, 0, 1],
         details: [
             { party: "ROZKVĚT", text: "Poukazuje na dokončený volně přístupný skatepark, hřiště a kluziště.", url: "https://www.rozkvet.eu/" },
-            { party: "SPOLEČNĚ", text: "K tomuto tématu jsem na webu strany nic konkrétního nenasel.", url: "https://spolecneprobrezany.cz/" },
+            { party: "SPOLEČNĚ", text: "K tomuto tématu jsem na webu strany nic konkrétního nenašel.", url: "https://spolecneprobrezany.cz/" },
             { party: "IMPULSPRO", text: "Požaduje více volně přístupných neorganizovaných sportovišť.", url: "https://impulspro.cz/" }
         ]
     },
     { 
-        cat: "Děti, školy a sport", 
+        cat: "🏫 Děti, školy a sport", 
         q: "Měla by obec více podporovat aktivity pro teenagery ve věku přibližně 12–18 let, i když nejde o aktivity využívané většinou obyvatel?", 
         stances: [1, 1, 0],
         details: [
@@ -454,7 +557,7 @@ const programQuestions = [
 
     // Veřejný prostor a každodenní život
     { 
-        cat: "Veřejný prostor a každodenní život", 
+        cat: "🌳 Veřejný prostor a každodenní život", 
         q: "Měla by obec více investovat do chodníků, ulic, zeleně, parků a celkového vzhledu veřejného prostoru?", 
         stances: [1, 1, 0],
         details: [
@@ -464,7 +567,7 @@ const programQuestions = [
         ]
     },
     { 
-        cat: "Veřejný prostor a každodenní život", 
+        cat: "🌳 Veřejný prostor a každodenní život", 
         q: "Měly by být Dolní Břežany ještě více zaměřené na pěší a cyklisty, i za cenu některých omezení pro automobily?", 
         stances: [1, 0, -1],
         details: [
@@ -474,7 +577,7 @@ const programQuestions = [
         ]
     },
     { 
-        cat: "Veřejný prostor a každodenní život", 
+        cat: "🌳 Veřejný prostor a každodenní život", 
         q: "Měla by obec více podporovat vznik nových obchodů, restaurací, kaváren a služeb, které obyvatelům umožní vyřídit více věcí přímo v obci?", 
         stances: [1, 1, 1],
         details: [
@@ -486,7 +589,7 @@ const programQuestions = [
 
     // Peníze a fungování radnice
     { 
-        cat: "Peníze a fungování radnice", 
+        cat: "💰 Peníze a fungování radnice", 
         q: "Měla by obec přednostně investovat do praktické infrastruktury (silnice, chodníky, parkování, školy, sport) před reprezentativními projekty a úpravami veřejných prostranství?", 
         stances: [-1, 0, 1],
         details: [
@@ -496,7 +599,7 @@ const programQuestions = [
         ]
     },
     { 
-        cat: "Peníze a fungování radnice", 
+        cat: "💰 Peníze a fungování radnice", 
         q: "Měla by obec při velkých investicích více zveřejňovat, kolik projekt skutečně stojí a jaké budou jeho budoucí provozní náklady?", 
         stances: [0, 1, 1],
         details: [
@@ -506,7 +609,7 @@ const programQuestions = [
         ]
     },
     { 
-        cat: "Peníze a fungování radnice", 
+        cat: "💰 Peníze a fungování radnice", 
         q: "Měli by mít občané větší možnost rozhodovat o tom, do kterých projektů obec investuje peníze?", 
         stances: [0, 1, 1],
         details: [
@@ -518,17 +621,17 @@ const programQuestions = [
 
     // Budoucnost Břežan
     { 
-        cat: "Budoucnost Břežan", 
+        cat: "🔮 Budoucnost Břežan", 
         q: "Měly by Dolní Břežany usilovat o to, aby byly i nadále jednou z nejatraktivnějších obcí v okolí Prahy, i kdyby to znamenalo vyšší investice a výdaje obce?", 
         stances: [1, 0, -1],
         details: [
             { party: "ROZKVĚT", text: "Cílí na vysokou prestiž, moderní architekturu a top kvalitu života.", url: "https://www.rozkvet.eu/" },
-            { party: "SPOLEČNĚ", text: "Zdůrazňuje stabilní a udržitelnou správy bez přetěžování kas.", url: "https://spolecneprobrezany.cz/" },
+            { party: "SPOLEČNĚ", text: "Zdůrazňuje stabilní a udržitelnou správu bez přetěžování kasy.", url: "https://spolecneprobrezany.cz/" },
             { party: "IMPULSPRO", text: "Varuje před předražováním provozu obce a zadlužováním.", url: "https://impulspro.cz/" }
         ]
     },
     { 
-        cat: "Budoucnost Břežan", 
+        cat: "🔮 Budoucnost Břežan", 
         q: "Měla by obec v příštích čtyřech letech více řešit kvalitu života současných obyvatel než další růst a rozvoj obce?", 
         stances: [1, 1, 1],
         details: [
@@ -539,7 +642,6 @@ const programQuestions = [
     }
 ];
 
-// Otázky na kritéria zkušenosti
 const criteriaQuestions = [
     { id: "c1", q: "Je pro vás důležité, aby lidé, kteří kandidují na radnici, měli zkušenost s řízením obce?" },
     { id: "c2", q: "Je pro vás důležité, aby kandidující tým měl zkušenost s realizací velkých obecních projektů?" },
@@ -553,7 +655,8 @@ let userAnswers = {};
 let userImportance = {};
 let criteriaAnswers = {};
 
-// Generování formuláře
+const TOTAL_QUESTIONS = programQuestions.length + criteriaQuestions.length;
+
 function initQuiz() {
     const progContainer = document.getElementById("program-questions");
     let currentCat = "";
@@ -569,12 +672,13 @@ function initQuiz() {
 
         const qCard = document.createElement("div");
         qCard.className = "question-card";
+        qCard.id = `q-card-${index}`;
         qCard.innerHTML = `
             <div class="question-text">${index + 1}. ${item.q}</div>
             <div class="options">
-                <button type="button" class="btn-option" onclick="setAnswer(${index}, 1, this)">Ano</button>
-                <button type="button" class="btn-option" onclick="setAnswer(${index}, 0, this)">Je mi to jedno</button>
-                <button type="button" class="btn-option" onclick="setAnswer(${index}, -1, this)">Ne</button>
+                <button type="button" class="btn-option btn-yes" onclick="setAnswer(${index}, 1, this)">Ano</button>
+                <button type="button" class="btn-option btn-neutral" onclick="setAnswer(${index}, 0, this)">Nevím / Neutrální</button>
+                <button type="button" class="btn-option btn-no" onclick="setAnswer(${index}, -1, this)">Ne</button>
             </div>
             <label class="importance-toggle">
                 <input type="checkbox" onchange="setImportance(${index}, this.checked)">
@@ -588,16 +692,19 @@ function initQuiz() {
     criteriaQuestions.forEach((item) => {
         const cCard = document.createElement("div");
         cCard.className = "question-card";
+        cCard.id = `crit-card-${item.id}`;
         cCard.innerHTML = `
             <div class="question-text">${item.q}</div>
             <div class="options">
-                <button type="button" class="btn-option" onclick="setCriteria('${item.id}', 'Ano', this)">Ano</button>
-                <button type="button" class="btn-option" onclick="setCriteria('${item.id}', 'Nevím / Nerozhoduje', this)">Nevím</button>
-                <button type="button" class="btn-option" onclick="setCriteria('${item.id}', 'Ne', this)">Ne</button>
+                <button type="button" class="btn-option btn-yes" onclick="setCriteria('${item.id}', 'Ano', this)">Ano</button>
+                <button type="button" class="btn-option btn-neutral" onclick="setCriteria('${item.id}', 'Nevím / Nerozhoduje', this)">Nevím</button>
+                <button type="button" class="btn-option btn-no" onclick="setCriteria('${item.id}', 'Ne', this)">Ne</button>
             </div>
         `;
         critContainer.appendChild(cCard);
     });
+
+    updateProgress();
 }
 
 function setAnswer(qIndex, val, btn) {
@@ -605,6 +712,9 @@ function setAnswer(qIndex, val, btn) {
     const parent = btn.parentElement;
     parent.querySelectorAll('.btn-option').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    
+    document.getElementById(`q-card-${qIndex}`).classList.add('answered');
+    updateProgress();
 }
 
 function setImportance(qIndex, isImportant) {
@@ -616,10 +726,28 @@ function setCriteria(critId, val, btn) {
     const parent = btn.parentElement;
     parent.querySelectorAll('.btn-option').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    
+    document.getElementById(`crit-card-${critId}`).classList.add('answered');
+    updateProgress();
+}
+
+function updateProgress() {
+    const answeredCount = Object.keys(userAnswers).length + Object.keys(criteriaAnswers).length;
+    const remaining = TOTAL_QUESTIONS - answeredCount;
+    const countSpan = document.getElementById("progress-text-count");
+
+    if (remaining === 0) {
+        countSpan.innerHTML = "✓ Všechny otázky zodpovězeny!";
+        countSpan.style.background = "#27ae60";
+        countSpan.style.color = "#ffffff";
+    } else {
+        countSpan.innerHTML = `Zbývá zodpovědět <b>${remaining}</b> z ${TOTAL_QUESTIONS} otázek`;
+        countSpan.style.background = "#e9ecef";
+        countSpan.style.color = "var(--primary)";
+    }
 }
 
 function calculateResults() {
-    // 1. Výpočet programové shody
     let partyScores = [0, 0, 0];
     let maxPossibleScore = 0;
 
@@ -641,7 +769,6 @@ function calculateResults() {
         }
     });
 
-    // Zobrazení výsledků programové shody
     const progResContainer = document.getElementById("program-results");
     progResContainer.innerHTML = "";
 
@@ -667,7 +794,6 @@ function calculateResults() {
         progResContainer.appendChild(card);
     });
 
-    // Zobrazení rozpadu podle jednotlivých otázek a zdrojů
     const bdContainer = document.getElementById("questions-breakdown");
     bdContainer.innerHTML = "";
 
@@ -675,11 +801,11 @@ function calculateResults() {
         const uAns = userAnswers[index];
         if (uAns !== undefined) {
             const qDiv = document.createElement("div");
-            qDiv.className = "question-card question-detail";
+            qDiv.className = "question-card";
             
-            let uAnsText = uAns === 1 ? "Ano" : (uAns === -1 ? "Ne" : "Je mi to jedno");
+            let uAnsText = uAns === 1 ? "<span style='color: var(--color-yes); font-weight: bold;'>Ano</span>" : (uAns === -1 ? "<span style='color: var(--color-no); font-weight: bold;'>Ne</span>" : "<span style='color: var(--color-neutral); font-weight: bold;'>Nevím / Neutrální</span>");
             let html = `<strong>${index + 1}. ${item.q}</strong><br>`;
-            html += `<span style="color: var(--text-muted); font-size: 0.9em;">Vaše odpověď: <b>${uAnsText}</b> ${userImportance[index] ? '(Důležité téma)' : ''}</span><div style="margin-top: 10px;">`;
+            html += `<span style="color: var(--text-muted); font-size: 0.9em;">Vaše odpověď: ${uAnsText} ${userImportance[index] ? '<b>(Důležité téma)</b>' : ''}</span><div style="margin-top: 10px;">`;
 
             item.details.forEach(d => {
                 html += `
@@ -695,7 +821,6 @@ function calculateResults() {
         }
     });
 
-    // 2. Vyhodnocení hodnotových kritérií a doporučení
     const critSummary = document.getElementById("criteria-summary");
     critSummary.innerHTML = "<strong>Vaše zvolené preference ohledně kandidátů:</strong><ul style='margin-top: 10px; padding-left: 20px;'>";
     
@@ -711,12 +836,11 @@ function calculateResults() {
     });
     critSummary.innerHTML += "</ul>";
 
-    // Výpočet doporučení podle 2. části
     const recBox = document.getElementById("criteria-recommendation");
     let recHtml = "<strong>💡 Vyhodnocení profilu kandidátů podle vašich preferencí:</strong><br>";
 
     if (yesCountExperience >= 3) {
-        recHtml += `Na základě vašich odpovedí je pro vás zásadní <b>dlouhodobá zkušenost, kontinuita a doložitelné výsledky</b> v řízení obce.<br>
+        recHtml += `Na základě vašich odpovědí je pro vás zásadní <b>dlouhodobá zkušenost, kontinuitu a doložitelné výsledky</b> v řízení obce.<br>
         👉 Z tohoto pohledu vaším kritériím nejlépe vyhovuje uskupení <b>ROZKVĚT</b> (případně kandidáti se zkušenostmi ze zastupitelstva na kandidátce <b>SPOLEČNĚ</b>).`;
     } else if (noCountExperience >= 3) {
         recHtml += `Preferujete <b>změnu, nové tváře a nepotřebujete, aby kandidáti měli předchozí zkušenosti s řízením radnice</b>.<br>
@@ -728,7 +852,7 @@ function calculateResults() {
 
     recBox.innerHTML = recHtml;
 
-    // Přepnutí zobrazení
+    document.getElementById("progress-bar").style.display = "none";
     document.getElementById("quiz-form").style.display = "none";
     document.getElementById("results").style.display = "block";
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -740,12 +864,15 @@ function resetQuiz() {
     criteriaAnswers = {};
     document.querySelectorAll('.btn-option').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    document.querySelectorAll('.question-card').forEach(qc => qc.classList.remove('answered'));
+    
+    document.getElementById("progress-bar").style.display = "flex";
     document.getElementById("quiz-form").style.display = "block";
     document.getElementById("results").style.display = "none";
+    updateProgress();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Inicializace po načtení
 window.onload = initQuiz;
 </script>
 
