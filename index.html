@@ -25,7 +25,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 850px;
             margin: 0 auto;
             background: var(--card-bg);
             padding: 30px;
@@ -177,6 +177,15 @@
             font-size: 0.95em;
         }
 
+        .recommendation-box {
+            background: #eafaf1;
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 0 6px 6px 0;
+            font-size: 1em;
+        }
+
         .facts-list {
             margin-top: 10px;
             padding-left: 20px;
@@ -184,6 +193,33 @@
 
         .facts-list li {
             margin-bottom: 6px;
+        }
+
+        .question-detail {
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+
+        .party-comment {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+
+        .party-comment strong {
+            color: var(--primary);
+        }
+
+        .party-comment a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .party-comment a:hover {
+            text-decoration: underline;
         }
 
         .btn-reset {
@@ -215,7 +251,7 @@
     <form id="quiz-form">
         <!-- 1. ČÁST: PROGRAMOVÉ OTÁZKY -->
         <h2 class="section-title">1. Část: Programová shoda</h2>
-        <p>Až u 20 volebních témat zvolte svůj postoj a případně označte, zda je pro vás téma klíčové (dvojnásobná váha).</p>
+        <p>Zvolte svůj postoj u 20 volebních témat a případně označte, zda je pro vás téma klíčové (dvojnásobná váha).</p>
 
         <div id="program-questions"></div>
 
@@ -233,13 +269,17 @@
         <h2 class="section-title">Váš politický profil</h2>
 
         <h3>1. Programová shoda</h3>
-        <p>Shoda vašich názorů s volebními programy kandidujících subjektů:</p>
+        <p>Shoda vašich názorů s volebními programy a deklaracemi kandidujících subjektů:</p>
         <div id="program-results"></div>
 
-        <h3 style="margin-top: 30px;">2. Vaše preference při rozhodování</h3>
-        <div id="criteria-summary" class="question-card"></div>
+        <h3 style="margin-top: 35px;">Detailní rozpad podle otázek a zdroje webů</h3>
+        <div id="questions-breakdown"></div>
 
-        <h3 style="margin-top: 30px;">3. Co je dobré před volbou vědět (Fakta a kontext)</h3>
+        <h3 style="margin-top: 40px;">2. Vaše preference ohledně týmu a zkušeností</h3>
+        <div id="criteria-summary" class="question-card"></div>
+        <div id="criteria-recommendation" class="recommendation-box"></div>
+
+        <h3 style="margin-top: 40px;">3. Co je dobré před volbou vědět (Fakta a kontext)</h3>
         
         <div class="result-card">
             <div class="party-name">ROZKVĚT</div>
@@ -283,40 +323,220 @@
 </div>
 
 <script>
-// Data programových otázek (1 = Ano, 0 = Je mi to jedno, -1 = Ne)
-// Postoje subjektů: [Rozkvět, Společně, Impuls]
+// Data programových otázek (1 = Ano, 0 = Neutral/Je mi to jedno, -1 = Ne)
+// Stances: [Rozkvět, Společně, Impuls]
 const programQuestions = [
     // Doprava a obchvat
-    { cat: "Doprava a obchvat", q: "Měla by obec udělat maximum pro co nejrychlejší dokončení obchvatu Dolních Břežan?", stances: [1, 1, 1] },
-    { cat: "Doprava a obchvat", q: "Měla by obec více tlačit na Středočeský kraj, aby se obchvat skutečně začal stavět?", stances: [1, 1, 1] },
-    { cat: "Doprava a obchvat", q: "Měla by obec více řešit průjezd a bezpečnost dopravy přímo v centru Břežan, i kdyby to znamenalo omezení automobilové dopravy?", stances: [1, 0, -1] },
-    { cat: "Doprava a obchvat", q: "Mělo by být v obci vybudováno více parkovacích míst, i za cenu využití části veřejného prostoru?", stances: [-1, 0, 1] },
+    { 
+        cat: "Doprava a obchvat", 
+        q: "Měla by obec udělat maximum pro co nejrychlejší dokončení obchvatu Dolních Břežan?", 
+        stances: [1, 1, 1],
+        details: [
+            { party: "ROZKVĚT", text: "Podpora plynulosti dopravy a koordinace výstavby obchvatu s krajem.", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "Podporuje řešení dopravní infrastruktury a navazujících staveb.", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "Hlavní bod programu: 'Dekády slibů o obchvatu. My ho konečně postavíme.'", url: "https://impulspro.cz/" }
+        ]
+    },
+    { 
+        cat: "Doprava a obchvat", 
+        q: "Měla by obec více tlačit na Středočeský kraj, aby se obchvat skutečně začal stavět?", 
+        stances: [1, 1, 1],
+        details: [
+            { party: "ROZKVĚT", text: "Aktivně jednají s krajem jako investorem stavby.", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "Považuje součinnost s krajem za klíčovou.", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "Deklarují maximální tlak na kraj a přípravu podkladů obecní iniciativou.", url: "https://impulspro.cz/" }
+        ]
+    },
+    { 
+        cat: "Doprava a obchvat", 
+        q: "Měla by obec více řešit průjezd a bezpečnost dopravy přímo v centru Břežan, i kdyby to znamenalo omezení automobilové dopravy?", 
+        stances: [1, 0, -1],
+        details: [
+            { party: "ROZKVĚT", text: "Dlouhodobě realizuje zklidňující prvky v centru a okolí škol.", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "K tomuto konkrétnímu omezení v centru web detailní stanovisko neuvádí.", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "Odmítá 'projekty na efekt' a omezování plynulosti před dokončením obchvatu.", url: "https://impulspro.cz/" }
+        ]
+    },
+    { 
+        cat: "Doprava a obchvat", 
+        q: "Mělo by být v obci vybudováno více parkovacích míst, i za cenu využití části veřejného prostoru?", 
+        stances: [-1, 0, 1],
+        details: [
+            { party: "ROZKVĚT", text: "Upřednostňuje ochranu zeleně a parků před rozšiřováním asfaltových ploch.", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "K tomuto tématu jsem na webu strany nic konkrétního nenasel.", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "Zdůrazňuje potřebu řešit chybějící parkování v obci.", url: "https://impulspro.cz/" }
+        ]
+    },
     
     // Výstavba a rozvoj obce
-    { cat: "Výstavba a rozvoj obce", q: "Měla by obec výrazněji omezovat další bytovou a developerskou výstavbu, aby se Dolní Břežany příliš nezvětšovaly?", stances: [1, 1, 1] },
-    { cat: "Výstavba a rozvoj obce", q: "Měla by být nová výstavba povolována pouze tehdy, pokud současně přinese obci odpovídající infrastrukturu – například školu, školku, komunikace nebo veřejný prostor?", stances: [1, 1, 1] },
-    { cat: "Výstavba a rozvoj obce", q: "Měla by obec více chránit nezastavěnou krajinu a zemědělskou půdu před další výstavbou?", stances: [1, 1, 1] },
-    { cat: "Výstavba a rozvoj obce", q: "Je podle vás současné tempo rozvoje Dolních Břežan správné a měla by obec v podobném tempu pokračovat?", stances: [1, 0, -1] },
-    
+    { 
+        cat: "Výstavba a rozvoj obce", 
+        q: "Měla by obec výrazněji omezovat další bytovou a developerskou výstavbu, aby se Dolní Břežany příliš nezvětšovaly?", 
+        stances: [1, 1, 1],
+        details: [
+            { party: "ROZKVĚT", text: "Prosazuje regulovaný, stabilní a udržitelný rozvoj.", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "Akcentuje vyvážený rozvoj území bez přetížení infrastruktury.", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "Kritizuje nekontrolovaný růst a kapacitní limity obce.", url: "https://impulspro.cz/" }
+        ]
+    },
+    { 
+        cat: "Výstavba a rozvoj obce", 
+        q: "Měla by být nová výstavba povolována pouze tehdy, pokud současně přinese obci odpovídající infrastrukturu – například školu, školku, komunikace nebo veřejný prostor?", 
+        stances: [1, 1, 1],
+        details: [
+            { party: "ROZKVĚT", text: "Aplikuje plánovací smlouvy a příspěvky developerů do infrastruktury.", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "Důraz na rozvoj občasné vybavenosti ruku v ruce s výstavbou.", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "Trvá na tom, že rozvoj infrastruktury musí předcházet novým stavbám.", url: "https://impulspro.cz/" }
+        ]
+    },
+    { 
+        cat: "Výstavba a rozvoj obce", 
+        q: "Měla by obec více chránit nezastavěnou krajinu a zemědělskou půdu před další výstavbou?", 
+        stances: [1, 1, 1],
+        details: [
+            { party: "ROZKVĚT", text: "Prezentuje projekty výsadby alejí a ochrany okolní přírody.", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "Pořádá akce pro krajinu (např. lesní brigády na Zálepech).", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "Deklaruje ochranu rázu krajiny a přírodního prostředí.", url: "https://impulspro.cz/" }
+        ]
+    },
+    { 
+        cat: "Výstavba a rozvoj obce", 
+        q: "Je podle vás současné tempo rozvoje Dolních Břežan správné a měla by obec v podobném tempu pokračovat?", 
+        stances: [1, 0, -1],
+        details: [
+            { party: "ROZKVĚT", text: "Považuje dosavadní evoluci Břežan za úspěšný příběh a chce navázat.", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "Hodnotí dosavadní stav pozitivně, ale žádá konsolidaci a citlivý přístup.", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "Tvrdí, že 30 let stejného směřování stačilo a je 'čas na změnu'.", url: "https://impulspro.cz/" }
+        ]
+    },
+
     // Děti, školy a sport
-    { cat: "Děti, školy a sport", q: "Měla by být jednou z hlavních priorit obce další podpora základní školy a zajištění dostatečné kapacity pro děti z obce?", stances: [1, 1, 1] },
-    { cat: "Děti, školy a sport", q: "Měla by obec více investovat do sportovišť a volnočasových aktivit pro děti a teenagery?", stances: [1, 1, 1] },
-    { cat: "Děti, školy a sport", q: "Chybí podle vás v Dolních Břežanech kvalitní veřejné sportoviště, které by mohly děti a teenageři využívat bez registrace a zdarma?", stances: [-1, 0, 1] },
-    { cat: "Děti, školy a sport", q: "Měla by obec více podporovat aktivity pro teenagery ve věku přibližně 12–18 let, i když nejde o aktivity využívané většinou obyvatel?", stances: [1, 1, 0] },
-    
+    { 
+        cat: "Děti, školy a sport", 
+        q: "Měla by být jednou z hlavních priorit obce další podpora základní školy a zajištění dostatečné kapacity pro děti z obce?", 
+        stances: [1, 1, 1],
+        details: [
+            { party: "ROZKVĚT", text: "Realizoval rekostrukci dvora ZŠ, zahrady MŠ a buduje nové dětské skupiny.", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "Podpora školství a sportu mládeže je stěžejním bodem.", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "Školství a bezpečnost dětí označuje za prioritu.", url: "https://impulspro.cz/" }
+        ]
+    },
+    { 
+        cat: "Děti, školy a sport", 
+        q: "Měla by obec více investovat do sportovišť a volnočasových aktivit pro děti a teenagery?", 
+        stances: [1, 1, 1],
+        details: [
+            { party: "ROZKVĚT", text: "Investoval do skateparku (5,2 mil.) a klubovny ve Lhotě (12,8 mil.).", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "Kandidáti působí v vedení sportovních klubů (SK Olympia).", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "Podporuje rozvoj sportovních možností pro mládež.", url: "https://impulspro.cz/" }
+        ]
+    },
+    { 
+        cat: "Děti, školy a sport", 
+        q: "Chybí podle vás v Dolních Břežanech kvalitní veřejné sportoviště, které by mohly děti a teenageři využívat bez registrace a zdarma?", 
+        stances: [-1, 0, 1],
+        details: [
+            { party: "ROZKVĚT", text: "Poukazuje na dokončený volně přístupný skatepark, hřiště a kluziště.", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "K tomuto tématu jsem na webu strany nic konkrétního nenasel.", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "Požaduje více volně přístupných neorganizovaných sportovišť.", url: "https://impulspro.cz/" }
+        ]
+    },
+    { 
+        cat: "Děti, školy a sport", 
+        q: "Měla by obec více podporovat aktivity pro teenagery ve věku přibližně 12–18 let, i když nejde o aktivity využívané většinou obyvatel?", 
+        stances: [1, 1, 0],
+        details: [
+            { party: "ROZKVĚT", text: "Cíleně rozšířil skatepark pro teenagery.", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "Podporuje zapojení mládeže do spolkového života.", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "K tomuto konkrétnímu věkovému vymezení jsem na webu nic nenalezl.", url: "https://impulspro.cz/" }
+        ]
+    },
+
     // Veřejný prostor a každodenní život
-    { cat: "Veřejný prostor a každodenní život", q: "Měla by obec více investovat do chodníků, ulic, zeleně, parků a celkového vzhledu veřejného prostoru?", stances: [1, 1, 0] },
-    { cat: "Veřejný prostor a každodenní život", q: "Měly by být Dolní Břežany ještě více zaměřené na pěší a cyklisty, i za cenu některých omezení pro automobily?", stances: [1, 0, -1] },
-    { cat: "Veřejný prostor a každodenní život", q: "Měla by obec více podporovat vznik nových obchodů, restaurací, kaváren a služeb, které obyvatelům umožní vyřídit více věcí přímo v obci?", stances: [1, 1, 1] },
-    
+    { 
+        cat: "Veřejný prostor a každodenní život", 
+        q: "Měla by obec více investovat do chodníků, ulic, zeleně, parků a celkového vzhledu veřejného prostoru?", 
+        stances: [1, 1, 0],
+        details: [
+            { party: "ROZKVĚT", text: "Péči o zeleň a estetiku obecního prostoru staví do popředí.", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "Kladou důraz na kvalitní veřejná prostranství ve všech částech obce.", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "Chce se zaměřit spíše na základní infrastrukturu než 'efektní' veřejné prostory.", url: "https://impulspro.cz/" }
+        ]
+    },
+    { 
+        cat: "Veřejný prostor a každodenní život", 
+        q: "Měly by být Dolní Břežany ještě více zaměřené na pěší a cyklisty, i za cenu některých omezení pro automobily?", 
+        stances: [1, 0, -1],
+        details: [
+            { party: "ROZKVĚT", text: "Systematicky buduje cyklostezky (Cholupice aj.) a chodníky.", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "Podporuje cyklostezky a chodníky, bez výslovného omezování aut.", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "Odmítá omezení pro automobily do doby vyřešení obchvatu.", url: "https://impulspro.cz/" }
+        ]
+    },
+    { 
+        cat: "Veřejný prostor a každodenní život", 
+        q: "Měla by obec více podporovat vznik nových obchodů, restaurací, kaváren a služeb, které obyvatelům umožní vyřídit více věcí přímo v obci?", 
+        stances: [1, 1, 1],
+        details: [
+            { party: "ROZKVĚT", text: "Podporuje místní podnikatelské prostředí a občanskou vybavenost.", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "Vítá rozvoj služeb přímo v obci.", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "Podporuje rozvoj místních služeb a podnikání.", url: "https://impulspro.cz/" }
+        ]
+    },
+
     // Peníze a fungování radnice
-    { cat: "Peníze a fungování radnice", q: "Měla by obec přednostně investovat do praktické infrastruktury (silnice, chodníky, parkování, školy, sport) před reprezentativními projekty a úpravami veřejných prostranství?", stances: [-1, 0, 1] },
-    { cat: "Peníze a fungování radnice", q: "Měla by obec při velkých investicích více zveřejňovat, kolik projekt skutečně stojí a jaké budou jeho budoucí provozní náklady?", stances: [0, 1, 1] },
-    { cat: "Peníze a fungování radnice", q: "Měli by mít občané větší možnost rozhodovat o tom, do kterých projektů obec investuje peníze?", stances: [0, 1, 1] },
-    
+    { 
+        cat: "Peníze a fungování radnice", 
+        q: "Měla by obec přednostně investovat do praktické infrastruktury (silnice, chodníky, parkování, školy, sport) před reprezentativními projekty a úpravami veřejných prostranství?", 
+        stances: [-1, 0, 1],
+        details: [
+            { party: "ROZKVĚT", text: "Považuje reprezentativní architekturu a zeleň za rovnocennou součást kvality života.", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "Snaží se o rovnováhu mezi praktickou infrastrukturou a vzhledem obce.", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "Jasně deklaruje: 'Žádné zbytečné investice na efekt. Zaměříme se na konkrétní přínos.'", url: "https://impulspro.cz/" }
+        ]
+    },
+    { 
+        cat: "Peníze a fungování radnice", 
+        q: "Měla by obec při velkých investicích více zveřejňovat, kolik projekt skutečně stojí a jaké budou jeho budoucí provozní náklady?", 
+        stances: [0, 1, 1],
+        details: [
+            { party: "ROZKVĚT", text: "Uvádí náklady realizovaných projektů na webu (rozpočet i dotace).", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "Předseda finančního výboru zdůrazňuje odpovědné finanční řízení.", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "Požaduje přísnou kontrolu rozpočtu a detailní transparentnost.", url: "https://impulspro.cz/" }
+        ]
+    },
+    { 
+        cat: "Peníze a fungování radnice", 
+        q: "Měli by mít občané větší možnost rozhodovat o tom, do kterých projektů obec investuje peníze?", 
+        stances: [0, 1, 1],
+        details: [
+            { party: "ROZKVĚT", text: "Uplatňuje participativní prvky, spoléhá však i na odbornou vizi.", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "Pořádá sousedská setkání a sbírá podněty k projektům.", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "Slibuje: 'Občané jako partneři, ne jako publikum. Skutečná spoluúčast na rozhodování.'", url: "https://impulspro.cz/" }
+        ]
+    },
+
     // Budoucnost Břežan
-    { cat: "Budoucnost Břežan", q: "Měly by Dolní Břežany usilovat o to, aby byly i nadále jednou z nejatraktivnějších obcí v okolí Prahy, i kdyby to znamenalo vyšší investice a výdaje obce?", stances: [1, 0, -1] },
-    { cat: "Budoucnost Břežan", q: "Měla by obec v příštích čtyřech letech více řešit kvalitu života současných obyvatel než další růst a rozvoj obce?", stances: [1, 1, 1] }
+    { 
+        cat: "Budoucnost Břežan", 
+        q: "Měly by Dolní Břežany usilovat o to, aby byly i nadále jednou z nejatraktivnějších obcí v okolí Prahy, i kdyby to znamenalo vyšší investice a výdaje obce?", 
+        stances: [1, 0, -1],
+        details: [
+            { party: "ROZKVĚT", text: "Cílí na vysokou prestiž, moderní architekturu a top kvalitu života.", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "Zdůrazňuje stabilní a udržitelnou správy bez přetěžování kas.", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "Varuje před předražováním provozu obce a zadlužováním.", url: "https://impulspro.cz/" }
+        ]
+    },
+    { 
+        cat: "Budoucnost Břežan", 
+        q: "Měla by obec v příštích čtyřech letech více řešit kvalitu života současných obyvatel než další růst a rozvoj obce?", 
+        stances: [1, 1, 1],
+        details: [
+            { party: "ROZKVĚT", text: "Staví na službách pro stávající obyvatele všech generací.", url: "https://www.rozkvet.eu/" },
+            { party: "SPOLEČNĚ", text: "Soustředí se na potřeby obyvatel Břežan, Lhoty, Zálep a Jarova.", url: "https://spolecneprobrezany.cz/" },
+            { party: "IMPULSPRO", text: "Akcentuje vyřešení dlouhodobých pálivých problémů stávajících lidí.", url: "https://impulspro.cz/" }
+        ]
+    }
 ];
 
 // Otázky na kritéria zkušenosti
@@ -399,7 +619,7 @@ function setCriteria(critId, val, btn) {
 }
 
 function calculateResults() {
-    // Spočítat programovou shodu
+    // 1. Výpočet programové shody
     let partyScores = [0, 0, 0];
     let maxPossibleScore = 0;
 
@@ -407,10 +627,9 @@ function calculateResults() {
         const uAns = userAnswers[index];
         if (uAns !== undefined) {
             const weight = userImportance[index] ? 2 : 1;
-            maxPossibleScore += 2 * weight; // Maximální možná shoda na otázku je 2 rozstínová koronaváhy
+            maxPossibleScore += 2 * weight;
 
             item.stances.forEach((partyStance, pIdx) => {
-                // Výpočet shody: 2 body za shodu, 1 bod za neutralitu, 0 za rozpor
                 const diff = Math.abs(uAns - partyStance);
                 let score = 0;
                 if (diff === 0) score = 2;
@@ -448,17 +667,66 @@ function calculateResults() {
         progResContainer.appendChild(card);
     });
 
-    // Zobrazení shrnutí hodnotových kritérií
+    // Zobrazení rozpadu podle jednotlivých otázek a zdrojů
+    const bdContainer = document.getElementById("questions-breakdown");
+    bdContainer.innerHTML = "";
+
+    programQuestions.forEach((item, index) => {
+        const uAns = userAnswers[index];
+        if (uAns !== undefined) {
+            const qDiv = document.createElement("div");
+            qDiv.className = "question-card question-detail";
+            
+            let uAnsText = uAns === 1 ? "Ano" : (uAns === -1 ? "Ne" : "Je mi to jedno");
+            let html = `<strong>${index + 1}. ${item.q}</strong><br>`;
+            html += `<span style="color: var(--text-muted); font-size: 0.9em;">Vaše odpověď: <b>${uAnsText}</b> ${userImportance[index] ? '(Důležité téma)' : ''}</span><div style="margin-top: 10px;">`;
+
+            item.details.forEach(d => {
+                html += `
+                    <div class="party-comment">
+                        <strong>${d.party}:</strong> ${d.text} 
+                        <br><a href="${d.url}" target="_blank" rel="noopener">🔗 Zdroj: Web ${d.party}</a>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            qDiv.innerHTML = html;
+            bdContainer.appendChild(qDiv);
+        }
+    });
+
+    // 2. Vyhodnocení hodnotových kritérií a doporučení
     const critSummary = document.getElementById("criteria-summary");
-    critSummary.innerHTML = "<strong>Vaše preference ohledně týmu a zkušeností:</strong><ul style='margin-top: 10px; padding-left: 20px;'>";
+    critSummary.innerHTML = "<strong>Vaše zvolené preference ohledně kandidátů:</strong><ul style='margin-top: 10px; padding-left: 20px;'>";
     
-    let hasCriteria = false;
+    let yesCountExperience = 0;
+    let noCountExperience = 0;
+
     criteriaQuestions.forEach(item => {
         const ans = criteriaAnswers[item.id] || "Nezvoleno";
         critSummary.innerHTML += `<li>${item.q} <strong>${ans}</strong></li>`;
-        if (criteriaAnswers[item.id]) hasCriteria = true;
+        
+        if (ans === "Ano") yesCountExperience++;
+        if (ans === "Ne") noCountExperience++;
     });
     critSummary.innerHTML += "</ul>";
+
+    // Výpočet doporučení podle 2. části
+    const recBox = document.getElementById("criteria-recommendation");
+    let recHtml = "<strong>💡 Vyhodnocení profilu kandidátů podle vašich preferencí:</strong><br>";
+
+    if (yesCountExperience >= 3) {
+        recHtml += `Na základě vašich odpovedí je pro vás zásadní <b>dlouhodobá zkušenost, kontinuita a doložitelné výsledky</b> v řízení obce.<br>
+        👉 Z tohoto pohledu vaším kritériím nejlépe vyhovuje uskupení <b>ROZKVĚT</b> (případně kandidáti se zkušenostmi ze zastupitelstva na kandidátce <b>SPOLEČNĚ</b>).`;
+    } else if (noCountExperience >= 3) {
+        recHtml += `Preferujete <b>změnu, nové tváře a nepotřebujete, aby kandidáti měli předchozí zkušenosti s řízením radnice</b>.<br>
+        👉 Vašim kritériím v této oblasti nejlépe vyhovuje nové uskupení <b>IMPULSPRO</b>.`;
+    } else {
+        recHtml += `Vaše preference stran zkušeností týmu jsou <b>vyvážené</b>. Můžete posuzovat kandidáty individuálně bez ohledu na to, zda jde o stávající vedení nebo zcela nové kandidáty.<br>
+        👉 Vhodným kompromisem mezi zkušeností a nezávislými kandidáty může být uskupení <b>SPOLEČNĚ</b> nebo kombinace programové shody u ostatních subjektů.`;
+    }
+
+    recBox.innerHTML = recHtml;
 
     // Přepnutí zobrazení
     document.getElementById("quiz-form").style.display = "none";
