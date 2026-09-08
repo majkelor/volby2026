@@ -26,10 +26,10 @@
             line-height: 1.6;
             margin: 0;
             padding: 20px;
-            padding-top: 80px; /* Prostor pro pevný ukazatel */
+            padding-top: 80px;
+            padding-bottom: 40px;
         }
 
-        /* Pevná lišta s počítadlem */
         .progress-bar-sticky {
             position: fixed;
             top: 0;
@@ -90,7 +90,6 @@
             font-size: 1.5em;
         }
 
-        /* Výrazné oddělení kategorií */
         .category-title {
             background: linear-gradient(135deg, #2c3e50, #34495e);
             color: white;
@@ -124,7 +123,6 @@
             margin-bottom: 12px;
         }
 
-        /* Barevné rozlišení tlačítek */
         .options {
             display: flex;
             gap: 10px;
@@ -145,7 +143,6 @@
             font-weight: 600;
         }
 
-        /* Styl tlačítka ANO */
         .btn-option.btn-yes {
             color: var(--color-yes);
             border-color: #a3e0b5;
@@ -156,7 +153,6 @@
             border-color: var(--color-yes);
         }
 
-        /* Styl tlačítka NEVÍM / NEUTRAL */
         .btn-option.btn-neutral {
             color: var(--color-neutral);
             border-color: #ced4da;
@@ -167,7 +163,6 @@
             border-color: var(--color-neutral);
         }
 
-        /* Styl tlačítka NE */
         .btn-option.btn-no {
             color: var(--color-no);
             border-color: #f5b7b1;
@@ -207,7 +202,6 @@
             background: #219150;
         }
 
-        /* Tlačítka pro rozbalování sekcí */
         .btn-toggle-main {
             background: #e9ecef;
             color: var(--primary);
@@ -262,10 +256,9 @@
             display: block;
         }
 
-        /* Responsive Iframe pro video */
         .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 */
+            padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
             max-width: 100%;
@@ -283,7 +276,6 @@
             border: 0;
         }
 
-        /* Results Styles */
         #results {
             display: none;
         }
@@ -377,6 +369,25 @@
             margin-top: 30px;
         }
 
+        .footer-counter {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.95em;
+        }
+
+        .counter-badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 12px;
+            margin-left: 6px;
+        }
+
         @media (max-width: 600px) {
             .options {
                 flex-direction: column;
@@ -389,7 +400,6 @@
 </head>
 <body>
 
-<!-- Pevný ukazatel průběhu -->
 <div class="progress-bar-sticky" id="progress-bar">
     <span class="progress-text">Stav vyplnění dotazníku:</span>
     <span class="progress-count" id="progress-text-count">Zbývá zodpovědět 25 otázek</span>
@@ -400,13 +410,11 @@
     <p class="subtitle">Dvourozměrný kompas: Programová shoda & Hodnotová kritéria</p>
 
     <form id="quiz-form">
-        <!-- 1. ČÁST: PROGRAMOVÉ OTÁZKY -->
         <h2 class="section-title">1. Část: Programová shoda</h2>
         <p>Zvolte svůj postoj u 20 volebních témat a případně označte, zda je pro vás téma klíčové (dvojnásobná váha).</p>
 
         <div id="program-questions"></div>
 
-        <!-- 2. ČÁST: KRITÉRIA ROZHODOVÁNÍ -->
         <h2 class="section-title">2. Část: Co je pro vás při volbě důležité?</h2>
         <p>Otázky zaměřené na zkušenosti, kontinuitu a transparentnost kandidátů.</p>
 
@@ -415,7 +423,6 @@
         <button type="button" class="btn-submit" onclick="calculateResults()">Vyhodnotit výsledky</button>
     </form>
 
-    <!-- ZOBRAZENÍ VÝSLEDKŮ -->
     <div id="results">
         <h2 class="section-title">Váš politický profil</h2>
 
@@ -423,7 +430,6 @@
         <p>Shoda vašich názorů s volebními programy a deklaracemi kandidujících subjektů:</p>
         <div id="program-results"></div>
 
-        <!-- SKRYTÁ SEKCE: DETAILNÍ ROZPAD PODLE OTÁZEK -->
         <h3 style="margin-top: 35px;">Detailní rozpad podle otázek a zdroje webů</h3>
         <button type="button" class="btn-toggle-main" id="btn-toggle-section-breakdown" onclick="toggleMainSection('breakdown-container', 'btn-toggle-section-breakdown', 'Rozbalit detailní rozpad podle otázek')">
             <span>▼ Rozbalit detailní rozpad podle otázek</span>
@@ -433,13 +439,9 @@
             <div id="questions-breakdown"></div>
         </div>
 
-        <!-- 2. ČÁST: PREFERENCE OHLEDNĚ TÝMU A ZKUŠENOSTÍ -->
         <h3 style="margin-top: 40px;">2. Vaše preference ohledně týmu a zkušeností</h3>
-        
-        <!-- Doporučení přímo viditelné -->
         <div id="criteria-recommendation" class="recommendation-box"></div>
 
-        <!-- Skrytý detail voleb -->
         <button type="button" class="btn-toggle-main" id="btn-toggle-section-criteria" onclick="toggleMainSection('criteria-summary-container', 'btn-toggle-section-criteria', 'Rozbalit detail vaší volby')">
             <span>▼ Rozbalit detail vaší volby</span>
         </button>
@@ -448,7 +450,6 @@
             <div id="criteria-summary" class="question-card"></div>
         </div>
 
-        <!-- 3. ČÁST: FAKTA A KONTEXT -->
         <h3 style="margin-top: 40px;">3. Co je dobré před volbou vědět (Fakta a kontext)</h3>
         
         <div class="result-card">
@@ -488,7 +489,6 @@
             </div>
         </div>
 
-        <!-- VIDEO NA SAMÉM KONCI PO VYHODNOCENÍ -->
         <div style="margin-top: 50px; border-top: 2px solid var(--border); padding-top: 25px;">
             <h3 style="color: var(--primary); text-align: center;">Jak správně upravit a označit volební lístky?</h3>
             <p style="text-align: center; color: var(--text-muted); font-size: 0.95em;">Podívejte se na krátký návod, jak probíhá volba v komunálních volbách a jak křížkovat kandidáty:</p>
@@ -499,11 +499,73 @@
 
         <button type="button" class="btn-reset" onclick="resetQuiz()">Spustit znovu</button>
     </div>
+
+    <div class="footer-counter">
+        📊 Dotazník již globálně vyplnilo: <span class="counter-badge" id="completion-counter">...</span> občanů
+    </div>
 </div>
 
 <script>
+// --- KONFIGURACE GLOBÁLNÍHO POČÍ TAZLA (CounterAPI) ---
+const COUNTER_NAMESPACE = 'dolni-brezany-volby-2026';
+const COUNTER_KEY = 'vyplneni-dotazniku';
+const API_BASE = `https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}`;
+
+// Načtení aktuálního globálního počtu ze serveru
+async function fetchGlobalCounter() {
+    try {
+        const response = await fetch(API_BASE);
+        const data = await response.json();
+        
+        if (response.ok && data.count !== undefined) {
+            document.getElementById('completion-counter').innerText = data.count;
+        } else if (response.status === 404) {
+            // Pokud čítač ještě na serveru neexistuje, vytvoříme ho
+            createCounter();
+        } else {
+            document.getElementById('completion-counter').innerText = '0';
+        }
+    } catch (error) {
+        console.error('Chyba načítání počítadla:', error);
+        document.getElementById('completion-counter').innerText = '1';
+    }
+}
+
+// Vytvoření nového počítadla na serveru (spustí se pouze poprvé)
+async function createCounter() {
+    try {
+        const response = await fetch(`${API_BASE}/set?count=1`);
+        const data = await response.json();
+        if (data.count !== undefined) {
+            document.getElementById('completion-counter').innerText = data.count;
+        }
+    } catch (e) {
+        document.getElementById('completion-counter').innerText = '1';
+    }
+}
+
+// Navýšení počítadla na serveru o +1
+async function incrementGlobalCounter() {
+    // Zamezí vícenásobnému započítání stejného uživatele v jedné relaci prohlížeče
+    if (sessionStorage.getItem('alreadyCounted')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/up`);
+        const data = await response.json();
+        
+        if (data && data.count !== undefined) {
+            document.getElementById('completion-counter').innerText = data.count;
+            sessionStorage.setItem('alreadyCounted', 'true');
+        }
+    } catch (error) {
+        console.error('Chyba při navýšení počítadla:', error);
+    }
+}
+
+// --- OTÁZKY A LOGIKA DOTAZNÍKU ---
 const programQuestions = [
-    // Doprava a obchvat
     { 
         cat: "🚗 Doprava a obchvat", 
         q: "Měla by obec udělat maximum pro co nejrychlejší dokončení obchvatu Dolních Břežan?", 
@@ -516,7 +578,7 @@ const programQuestions = [
     },
     { 
         cat: "🚗 Doprava a obchvat", 
-        q: "Měla by obec více tlačit na Středočeský kraj, aby se obchvat skutečně začal stavět?", 
+        q: "Měla by obec více tlačít na Středočeský kraj, aby se obchvat skutečně začal stavět?", 
         stances: [1, 1, 1],
         details: [
             { party: "ROZKVĚT", text: "Aktivně jednají s krajem jako investorem stavby.", url: "https://www.rozkvet.eu/" },
@@ -544,8 +606,6 @@ const programQuestions = [
             { party: "IMPULSPRO", text: "Zdůrazňuje potřebu řešit chybějící parkování v obci.", url: "https://impulspro.cz/" }
         ]
     },
-    
-    // Výstavba a rozvoj obce
     { 
         cat: "🏗️ Výstavba a rozvoj obce", 
         q: "Měla by obec výrazněji omezovat další bytovou a developerskou výstavbu, aby se Dolní Břežany příliš nezvětšovaly?", 
@@ -586,8 +646,6 @@ const programQuestions = [
             { party: "IMPULSPRO", text: "Tvrdí, že 30 let stejného směřování stačilo a je 'čas na změnu'.", url: "https://impulspro.cz/" }
         ]
     },
-
-    // Děti, školy a sport
     { 
         cat: "🏫 Děti, školy a sport", 
         q: "Měla by být jednou z hlavních priorit obce další podpora základní školy a zajištění dostatečné kapacity pro děti z obce?", 
@@ -628,8 +686,6 @@ const programQuestions = [
             { party: "IMPULSPRO", text: "K tomuto konkrétnímu věkovému vymezení jsem na webu nic nenalezl.", url: "https://impulspro.cz/" }
         ]
     },
-
-    // Veřejný prostor a každodenní život
     { 
         cat: "🌳 Veřejný prostor a každodenní život", 
         q: "Měla by obec více investovat do chodníků, ulic, zeleně, parků a celkového vzhledu veřejného prostoru?", 
@@ -660,8 +716,6 @@ const programQuestions = [
             { party: "IMPULSPRO", text: "Podporuje rozvoj místních služeb a podnikání.", url: "https://impulspro.cz/" }
         ]
     },
-
-    // Peníze a fungování radnice
     { 
         cat: "💰 Peníze a fungování radnice", 
         q: "Měla by obec přednostně investovat do praktické infrastruktury (silnice, chodníky, parkování, školy, sport) před reprezentativními projekty a úpravami veřejných prostranství?", 
@@ -692,8 +746,6 @@ const programQuestions = [
             { party: "IMPULSPRO", text: "Slibuje: 'Občané jako partneři, ne jako publikum. Skutečná spoluúčast na rozhodování.'", url: "https://impulspro.cz/" }
         ]
     },
-
-    // Budoucnost Břežan
     { 
         cat: "🔮 Budoucnost Břežan", 
         q: "Měly by Dolní Břežany usilovat o to, aby byly i nadále jednou z nejatraktivnějších obcí v okolí Prahy, i kdyby to znamenalo vyšší investice a výdaje obce?", 
@@ -732,6 +784,8 @@ let criteriaAnswers = {};
 const TOTAL_QUESTIONS = programQuestions.length + criteriaQuestions.length;
 
 function initQuiz() {
+    fetchGlobalCounter();
+
     const progContainer = document.getElementById("program-questions");
     let currentCat = "";
 
@@ -848,6 +902,8 @@ function toggleDetails(index) {
 }
 
 function calculateResults() {
+    incrementGlobalCounter();
+
     let partyScores = [0, 0, 0];
     let maxPossibleScore = 0;
 
@@ -907,11 +963,8 @@ function calculateResults() {
             
             let html = `<strong>${index + 1}. ${item.q}</strong><br>`;
             html += `<span style="color: var(--text-muted); font-size: 0.9em;">Vaše odpověď: ${uAnsText} ${userImportance[index] ? '<b>(Důležité téma)</b>' : ''}</span><br>`;
-            
-            // Tlačítko pro rozbalení podrobností u konkrétní otázky
             html += `<button type="button" class="btn-toggle-details" id="btn-toggle-${index}" onclick="toggleDetails(${index})">▼ Rozbalit detail a zdroje stránek</button>`;
             
-            // Skrytý obsah s detaily u otázky
             html += `<div class="details-content" id="details-${index}">`;
             item.details.forEach(d => {
                 html += `
@@ -973,7 +1026,6 @@ function resetQuiz() {
     document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
     document.querySelectorAll('.question-card').forEach(qc => qc.classList.remove('answered'));
     
-    // Zavření rozbalených sekcí
     document.getElementById('breakdown-container').classList.remove('open');
     document.getElementById('btn-toggle-section-breakdown').innerHTML = '<span>▼ Rozbalit detailní rozpad podle otázek</span>';
     document.getElementById('criteria-summary-container').classList.remove('open');
